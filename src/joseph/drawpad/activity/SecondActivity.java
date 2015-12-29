@@ -1,10 +1,11 @@
-package joseph.drawpad;
+package joseph.drawpad.activity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+import joseph.drawpad.R;
 
 /**
  * Created by 熊纪元 on 2015/12/25.
