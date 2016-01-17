@@ -9,6 +9,26 @@
                 android:layout_height="wrap_content" android:text="画"></Button>
         <Button android:id="@+id/Button02" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:text="擦"></Button>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="宽度："
+                android:id="@+id/textView"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:id="@+id/textView3"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="高度："
+                android:id="@+id/textView2"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:id="@+id/textView4"/>
     </LinearLayout>
     <SurfaceView android:id="@+id/SurfaceView01"
                  android:layout_width="fill_parent" android:layout_height="fill_parent"></SurfaceView>
