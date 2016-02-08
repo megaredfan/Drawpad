@@ -1,21 +1,25 @@
 package joseph.drawpad.activity;
 
 import android.app.Activity;
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Bundle;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.View;
+import android.view.*;
 import android.widget.Button;
 import joseph.drawpad.R;
 
 public class MainActivity extends Activity {
 
+    private MenuInflater menuInflater;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.main);
+
+        menuInflater = getMenuInflater();
+
         SurfaceView sfv = (SurfaceView) this.findViewById(R.id.SurfaceView01);
         SurfaceHolder sfh = sfv.getHolder();
 
@@ -46,15 +50,8 @@ public class MainActivity extends Activity {
 
                 canvas.translate(0, windowHeight);
                 canvas.rotate(-90);
-                canvas.save();
 
-                canvas.drawLine(windowHeight/2, 0, windowHeight/2, windowWidth, mPaint);
-                canvas.drawLine(windowHeight/2, windowWidth , windowHeight/2 + 5, windowWidth - 5, mPaint);
-                canvas.drawLine(windowHeight/2, windowWidth , windowHeight/2 - 5, windowWidth - 5, mPaint);
-
-                canvas.drawLine(0, windowWidth/2, windowHeight, windowWidth/2, mPaint);
-                canvas.drawLine(windowHeight, windowWidth/2, windowHeight - 5, windowWidth/2 - 5, mPaint);
-                canvas.drawLine(windowHeight, windowWidth/2, windowHeight - 5, windowWidth/2 + 5, mPaint);
+                //drawAxis(canvas,windowHeight,windowWidth,mPaint);
 
                 /*canvas.rotate(90);
                 canvas.translate(0,-windowHeight);
@@ -93,13 +90,7 @@ public class MainActivity extends Activity {
                 canvas.translate(0, windowHeight);
                 canvas.rotate(-90);
 
-                canvas.drawLine(windowHeight/2, 0, windowHeight/2, windowWidth, mPaint);
-                canvas.drawLine(windowHeight/2, windowWidth , windowHeight/2 + 5, windowWidth - 5, mPaint);
-                canvas.drawLine(windowHeight/2, windowWidth , windowHeight/2 - 5, windowWidth - 5, mPaint);
-
-                canvas.drawLine(0, windowWidth/2, windowHeight, windowWidth/2, mPaint);
-                canvas.drawLine(windowHeight, windowWidth/2, windowHeight - 5, windowWidth/2 - 5, mPaint);
-                canvas.drawLine(windowHeight, windowWidth/2, windowHeight - 5, windowWidth/2 + 5, mPaint);
+                //drawAxis(canvas,windowHeight,windowWidth,mPaint);
 
                 float[] ptsX = new float[windowWidth*100];
 
@@ -133,13 +124,7 @@ public class MainActivity extends Activity {
                 canvas.translate(0, windowHeight);
                 canvas.rotate(-90);
 
-                canvas.drawLine(windowHeight/2, 0, windowHeight/2, windowWidth, mPaint);
-                canvas.drawLine(windowHeight/2, windowWidth , windowHeight/2 + 5, windowWidth - 5, mPaint);
-                canvas.drawLine(windowHeight/2, windowWidth , windowHeight/2 - 5, windowWidth - 5, mPaint);
-
-                canvas.drawLine(0, windowWidth/2, windowHeight, windowWidth/2, mPaint);
-                canvas.drawLine(windowHeight, windowWidth/2, windowHeight - 5, windowWidth/2 - 5, mPaint);
-                canvas.drawLine(windowHeight, windowWidth/2, windowHeight - 5, windowWidth/2 + 5, mPaint);
+                //drawAxis(canvas,windowHeight,windowWidth,mPaint);
 
                 float[] ptsX = new float[windowWidth*100];
 
@@ -164,11 +149,34 @@ public class MainActivity extends Activity {
         btn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Canvas canvas = sfh.lockCanvas(null);
+                int windowWidth = sfv.getWidth();
+                int windowHeight = sfv.getHeight();
+                Canvas canvas = sfh.lockCanvas(new Rect(0, 0, windowWidth, windowHeight ));
                 canvas.drawColor(Color.BLACK);// 清除画布
-                sfh.unlockCanvasAndPost(canvas);
+                drawAxis(canvas, windowHeight, windowWidth, mPaint);
 
+                sfh.unlockCanvasAndPost(canvas);
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menuInflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+
+    private void drawAxis(Canvas canvas, int height, int width, Paint mPaint) {
+        canvas.translate(0, height);
+        canvas.rotate(-90);
+
+        canvas.drawLine(height/2, 0, height/2, width, mPaint);
+        canvas.drawLine(height/2, width , height/2 + 5, width - 5, mPaint);
+        canvas.drawLine(height/2, width , height/2 - 5, width - 5, mPaint);
+
+        canvas.drawLine(0, width/2, height, width/2, mPaint);
+        canvas.drawLine(height, width/2, height - 5, width/2 - 5, mPaint);
+        canvas.drawLine(height, width/2, height - 5, width/2 + 5, mPaint);
     }
 }
