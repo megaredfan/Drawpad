@@ -217,6 +217,24 @@ public class MainActivity extends Activity {
                 drawView.rePaintCurve();
             }
         });
+
+        btn4 = (Button)findViewById(R.id.Button04);
+        btn4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Curve curve = new Curve();
+                curve.setWidth(drawView.getWidth());
+                curve.setType(CurveType.Sinusoidal);
+                curve.setPoints(new Point[drawView.getWidth()]);
+
+                Point[] points = curve.calculateCurve(drawView.getHeight());
+
+                curve.setPoints(points);
+
+                drawView.setCurve(curve);
+                drawView.rePaintCurve();
+            }
+        });
     }
 
     /*@Override
