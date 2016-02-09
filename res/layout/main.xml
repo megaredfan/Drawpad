@@ -6,14 +6,16 @@
     <LinearLayout android:id="@+id/LinearLayout01"
                   android:layout_width="wrap_content" android:layout_height="wrap_content">
         <Button android:id="@+id/Button01" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:text="一次函数"></Button>
+                android:layout_height="wrap_content" android:text="一次函数"/>
         <Button android:id="@+id/Button03" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:text="二次函数"></Button>
+                android:layout_height="wrap_content" android:text="二次函数"/>
         <Button android:id="@+id/Button04" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:text="正弦函数"></Button>
+                android:layout_height="wrap_content" android:text="正弦函数"/>
         <Button android:id="@+id/Button02" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:text="清除"></Button>
+                android:layout_height="wrap_content" android:text="清除"/>
     </LinearLayout>
-    <SurfaceView android:id="@+id/SurfaceView01"
-                 android:layout_width="fill_parent" android:layout_height="fill_parent"></SurfaceView>
+    <joseph.drawpad.view.DrawView
+                 android:id="@+id/drawView"
+                 android:layout_width="fill_parent"
+                 android:layout_height="fill_parent"/>
 </LinearLayout>

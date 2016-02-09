@@ -1,41 +1,45 @@
 package joseph.drawpad.activity;
 
 import android.app.Activity;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.os.Bundle;
-import android.view.*;
+import android.view.MenuInflater;
+import android.view.View;
 import android.widget.Button;
 import joseph.drawpad.R;
+import joseph.drawpad.model.Curve;
+import joseph.drawpad.model.Point;
+import joseph.drawpad.utils.CurveType;
+import joseph.drawpad.view.DrawView;
 
 public class MainActivity extends Activity {
 
     private MenuInflater menuInflater;
-    @Override
+    private static Paint mPaint,pPaint;
+    private Button btn1,btn2,btn3,btn4;
+    private DrawView drawView;
+
+    /*@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
         menuInflater = getMenuInflater();
 
-        SurfaceView sfv = (SurfaceView) this.findViewById(R.id.SurfaceView01);
-        SurfaceHolder sfh = sfv.getHolder();
+        sfv = (SurfaceView) this.findViewById(R.id.SurfaceView01);
+        sfh = sfv.getHolder();
 
 
-        Button btn1 = (Button)findViewById(R.id.Button01);
-        Button btn2 = (Button)findViewById(R.id.Button02);
-        Button btn3 = (Button)findViewById(R.id.Button03);
-        Button btn4 = (Button)findViewById(R.id.Button04);
+        btn1 = (Button)findViewById(R.id.Button01);
+        btn2 = (Button)findViewById(R.id.Button02);
+        btn3 = (Button)findViewById(R.id.Button03);
+        btn4 = (Button)findViewById(R.id.Button04);
 
-
-
-        Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setColor(Color.LTGRAY);
         mPaint.setStrokeWidth(2);
 
-        Paint pPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        pPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         pPaint.setColor(Color.GREEN);
         pPaint.setStrokeWidth(2);
 
@@ -53,10 +57,10 @@ public class MainActivity extends Activity {
 
                 //drawAxis(canvas,windowHeight,windowWidth,mPaint);
 
-                /*canvas.rotate(90);
+                *//*canvas.rotate(90);
                 canvas.translate(0,-windowHeight);
                 canvas.drawText("O",windowWidth/2-10,windowHeight/2+10,mPaint);
-                canvas.restore();*/
+                canvas.restore();*//*
 
                 float[] ptsX = new float[windowWidth*100];
 
@@ -151,32 +155,79 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 int windowWidth = sfv.getWidth();
                 int windowHeight = sfv.getHeight();
+
                 Canvas canvas = sfh.lockCanvas(new Rect(0, 0, windowWidth, windowHeight ));
+
                 canvas.drawColor(Color.BLACK);// 清除画布
                 drawAxis(canvas, windowHeight, windowWidth, mPaint);
 
                 sfh.unlockCanvasAndPost(canvas);
             }
         });
+    }*/
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+
+        drawView = (DrawView)findViewById(R.id.drawView);
+
+        btn1 = (Button)findViewById(R.id.Button01);
+        btn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Curve curve = new Curve();
+                curve.setWidth(drawView.getWidth());
+                curve.setType(CurveType.Linear);
+                curve.setPoints(new Point[drawView.getWidth()]);
+
+                Point[] points = curve.calculateCurve(drawView.getHeight());
+
+                curve.setPoints(points);
+
+                drawView.setCurve(curve);
+                drawView.rePaintCurve();
+            }
+        });
+
+        btn2 = (Button)findViewById(R.id.Button02);
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawView.setCurve(null);
+                drawView.rePaintCurve();
+            }
+        });
+
+        btn3 = (Button)findViewById(R.id.Button03);
+        btn3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Curve curve = new Curve();
+                curve.setWidth(drawView.getWidth());
+                curve.setType(CurveType.Quadratic);
+                curve.setPoints(new Point[drawView.getWidth()]);
+
+                Point[] points = curve.calculateCurve(drawView.getHeight());
+
+                curve.setPoints(points);
+
+                drawView.setCurve(curve);
+                drawView.rePaintCurve();
+            }
+        });
+    }
+
+    /*@Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menuInflater.inflate(R.menu.menu, menu);
         return true;
-    }
+    }*/
 
-
-    private void drawAxis(Canvas canvas, int height, int width, Paint mPaint) {
-        canvas.translate(0, height);
-        canvas.rotate(-90);
-
-        canvas.drawLine(height/2, 0, height/2, width, mPaint);
-        canvas.drawLine(height/2, width , height/2 + 5, width - 5, mPaint);
-        canvas.drawLine(height/2, width , height/2 - 5, width - 5, mPaint);
-
-        canvas.drawLine(0, width/2, height, width/2, mPaint);
-        canvas.drawLine(height, width/2, height - 5, width/2 - 5, mPaint);
-        canvas.drawLine(height, width/2, height - 5, width/2 + 5, mPaint);
-    }
 }
