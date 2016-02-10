@@ -7,21 +7,14 @@ import java.util.List;
 /**
  * Created by 熊纪元 on 2016/2/9.
  */
+
 public class Curve {
     private Point[] points;
     private String name;
     private CurveType type;
     private List<Float> parameters;
-    private int width;
 
     public Curve(){ super();}
-
-    public Curve(Point[] points, String name, CurveType type, List<Float> parameters) {
-        this.points = points;
-        this.name = name;
-        this.type = type;
-        this.parameters = parameters;
-    }
 
     public String getName() {
         return name;
@@ -55,59 +48,49 @@ public class Curve {
         this.parameters = parameters;
     }
 
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public Point[] calculateCurve(int height) {
-        if(this == null)
-            return null;
-        int length = width;
-        Point[] points = new Point[length];
+    public Point[] calculate(int height, int width) {
+        Point[] points = new Point[width];
         switch (getType()) {
             case Linear:
-                for(int y = 0; y < length; y++) {
-                    //一次函数
+                for(int y = 0; y < width; y++) {
                     points[y] = new Point();
                     points[y].setY(y);
-                    points[y].setX(height/2f - width/2f + y);
-                    //ptsX[y] = height/2f - width/2f + y;
-                    //二次函数
-                    //ptsX[y] = ((y-windowWidth/2.0f)*(y-windowWidth/2.0f))/100.0f + windowHeight/2.0f;
-                    //正弦函数
-                    //ptsX[y] = ((float) Math.sin(((double) (y-windowWidth/2)/50))) * 100 + windowHeight/2;
-
+                    //points[y].setX(height/2f - width/2f + y);
+                    float X,Y,A,B;
+                    if(this.getParameters() != null && this.getParameters().size() == 2) {
+                        //X = -(width/2f - y) * this.getParameters().get(0) + height/2f + this.getParameters().get(1);
+                        Y = -(width/2f - y);
+                        B = height/2f + this.getParameters().get(1);
+                        A = this.getParameters().get(0);
+                        X = A * Y + B;
+                    }
+                    else
+                        X = -(width/2f - y) + height/2f;
+                    points[y].setX(X);
                 }
                 break;
             case Quadratic:
-                for(int y = 0; y < length; y++) {
-                    //一次函数
-                    //ptsX[y] = height/2f - width/2f + y;
-                    //二次函数
+                for(int y = 0; y < width; y++) {
                     points[y] = new Point();
                     points[y].setY(y);
-                    points[y].setX(((y-width/2f)*(y-width/2f))/100f + height/2f);
-                    //ptsX[y] = ((y-width/2f)*(y-width/2f))/100f + height/2f;
-                    //正弦函数
-                    //ptsX[y] = ((float) Math.sin(((double) (y-windowWidth/2)/50))) * 100 + windowHeight/2;
-
+                    float Y,X,A,B,C;
+                    if(this.getParameters() != null && this.getParameters().size() == 3) {
+                        Y = -(width/2f - y);
+                        A = this.getParameters().get(0);
+                        B = this.getParameters().get(1);
+                        C = this.getParameters().get(2) + height/2f;
+                        X = A * Y * Y + B * Y + C;
+                        points[y].setX(X);
+                    }
+                    else
+                        points[y].setX(((y-width/2f)*(y-width/2f))/100f + height/2f);
                 }
                 break;
             case Sinusoidal:
-                for(int y = 0; y < length; y++) {
-                    //一次函数
-                    //ptsX[y] = height/2f - width/2f + y;
-                    //二次函数
-                    //ptsX[y] = ((y-width/2f)*(y-width/2f))/100f + height/2f;
-                    //正弦函数
+                for(int y = 0; y < width; y++) {
                     points[y] = new Point();
                     points[y].setY(y);
                     points[y].setX(((float) Math.sin(((double) (y-width/2)/50))) * 100f + height/2f);
-                    //ptsX[y] = ((float) Math.sin(((double) (y-width/2)/50))) * 100f + height/2f;
                 }
                 break;
             default:

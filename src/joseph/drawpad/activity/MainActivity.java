@@ -1,176 +1,32 @@
 package joseph.drawpad.activity;
 
 import android.app.Activity;
-import android.graphics.Paint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.MenuInflater;
-import android.view.View;
+import android.view.*;
 import android.widget.Button;
+import android.widget.EditText;
 import joseph.drawpad.R;
 import joseph.drawpad.model.Curve;
 import joseph.drawpad.model.Point;
 import joseph.drawpad.utils.CurveType;
 import joseph.drawpad.view.DrawView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends Activity {
 
     private MenuInflater menuInflater;
-    private static Paint mPaint,pPaint;
-    private Button btn1,btn2,btn3,btn4;
     private DrawView drawView;
-
-    /*@Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-
-        menuInflater = getMenuInflater();
-
-        sfv = (SurfaceView) this.findViewById(R.id.SurfaceView01);
-        sfh = sfv.getHolder();
-
-
-        btn1 = (Button)findViewById(R.id.Button01);
-        btn2 = (Button)findViewById(R.id.Button02);
-        btn3 = (Button)findViewById(R.id.Button03);
-        btn4 = (Button)findViewById(R.id.Button04);
-
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaint.setColor(Color.LTGRAY);
-        mPaint.setStrokeWidth(2);
-
-        pPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        pPaint.setColor(Color.GREEN);
-        pPaint.setStrokeWidth(2);
-
-        btn1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                btn2.callOnClick();
-                int windowWidth = sfv.getWidth();
-                int windowHeight = sfv.getHeight();
-
-                Canvas canvas = sfh.lockCanvas(new Rect(0, 0, windowWidth, windowHeight ));
-
-                canvas.translate(0, windowHeight);
-                canvas.rotate(-90);
-
-                //drawAxis(canvas,windowHeight,windowWidth,mPaint);
-
-                *//*canvas.rotate(90);
-                canvas.translate(0,-windowHeight);
-                canvas.drawText("O",windowWidth/2-10,windowHeight/2+10,mPaint);
-                canvas.restore();*//*
-
-                float[] ptsX = new float[windowWidth*100];
-
-                for(int y = 0; y < ptsX.length; y++) {
-                    //一次函数
-                    ptsX[y] = windowHeight/2 - windowWidth/2 + y;
-                    //二次函数
-                    //ptsX[y] = ((y-windowWidth/2.0f)*(y-windowWidth/2.0f))/100.0f + windowHeight/2.0f;
-                    //正弦函数
-                    //ptsX[y] = ((float) Math.sin(((double) (y-windowWidth/2)/50))) * 100 + windowHeight/2;
-
-                }
-
-                for(int i = 0; i < ptsX.length-1; i++) {
-                    if(ptsX[i]<=windowHeight)
-                        canvas.drawLine(ptsX[i], i, ptsX[i+1], i+1, pPaint);
-                }
-                sfh.unlockCanvasAndPost(canvas);
-            }
-        });
-
-        btn3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                btn2.callOnClick();
-                int windowWidth = sfv.getWidth();
-                int windowHeight = sfv.getHeight();
-
-                Canvas canvas = sfh.lockCanvas(new Rect(0, 0, windowWidth, windowHeight ));
-
-                canvas.translate(0, windowHeight);
-                canvas.rotate(-90);
-
-                //drawAxis(canvas,windowHeight,windowWidth,mPaint);
-
-                float[] ptsX = new float[windowWidth*100];
-
-                for(int y = 0; y < ptsX.length; y++) {
-                    //一次函数
-                    //ptsX[y] = windowHeight/2 - windowWidth/2 + y;
-                    //二次函数
-                    ptsX[y] = ((y-windowWidth/2.0f)*(y-windowWidth/2.0f))/100.0f + windowHeight/2.0f;
-                    //正弦函数
-                    //ptsX[y] = ((float) Math.sin(((double) (y-windowWidth/2)/50))) * 100 + windowHeight/2;
-
-                }
-
-                for(int i = 0; i < ptsX.length-1; i++) {
-                    if(ptsX[i]<=windowHeight)
-                        canvas.drawLine(ptsX[i], i, ptsX[i+1], i+1, pPaint);
-                }
-                sfh.unlockCanvasAndPost(canvas);
-            }
-        });
-
-        btn4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                btn2.callOnClick();
-                int windowWidth = sfv.getWidth();
-                int windowHeight = sfv.getHeight();
-
-                Canvas canvas = sfh.lockCanvas(new Rect(0, 0, windowWidth, windowHeight ));
-
-                canvas.translate(0, windowHeight);
-                canvas.rotate(-90);
-
-                //drawAxis(canvas,windowHeight,windowWidth,mPaint);
-
-                float[] ptsX = new float[windowWidth*100];
-
-                for(int y = 0; y < ptsX.length; y++) {
-                    //一次函数
-                    //ptsX[y] = windowHeight/2 - windowWidth/2 + y;
-                    //二次函数
-                    //
-                    //ptsX[y] = ((y-windowWidth/2.0f)*(y-windowWidth/2.0f))/100.0f + windowHeight/2.0f;
-                    //正弦函数
-                    ptsX[y] = ((float) Math.sin(((double) (y-windowWidth/2)/50))) * 100 + windowHeight/2;
-
-                }
-
-                for(int i = 0; i < ptsX.length-1; i++) {
-                    canvas.drawLine(ptsX[i], i, ptsX[i+1], i+1, pPaint);
-                }
-                sfh.unlockCanvasAndPost(canvas);
-            }
-        });
-
-        btn2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int windowWidth = sfv.getWidth();
-                int windowHeight = sfv.getHeight();
-
-                Canvas canvas = sfh.lockCanvas(new Rect(0, 0, windowWidth, windowHeight ));
-
-                canvas.drawColor(Color.BLACK);// 清除画布
-                drawAxis(canvas, windowHeight, windowWidth, mPaint);
-
-                sfh.unlockCanvasAndPost(canvas);
-            }
-        });
-    }*/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
+        Button btn1,btn2,btn3,btn4;
+        menuInflater = getMenuInflater();
         drawView = (DrawView)findViewById(R.id.drawView);
 
         btn1 = (Button)findViewById(R.id.Button01);
@@ -178,11 +34,10 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Curve curve = new Curve();
-                curve.setWidth(drawView.getWidth());
                 curve.setType(CurveType.Linear);
                 curve.setPoints(new Point[drawView.getWidth()]);
 
-                Point[] points = curve.calculateCurve(drawView.getHeight());
+                Point[] points = curve.calculate(drawView.getHeight(), drawView.getWidth());
 
                 curve.setPoints(points);
 
@@ -205,11 +60,10 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Curve curve = new Curve();
-                curve.setWidth(drawView.getWidth());
                 curve.setType(CurveType.Quadratic);
                 curve.setPoints(new Point[drawView.getWidth()]);
 
-                Point[] points = curve.calculateCurve(drawView.getHeight());
+                Point[] points = curve.calculate(drawView.getHeight(), drawView.getWidth());
 
                 curve.setPoints(points);
 
@@ -223,11 +77,10 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Curve curve = new Curve();
-                curve.setWidth(drawView.getWidth());
                 curve.setType(CurveType.Sinusoidal);
                 curve.setPoints(new Point[drawView.getWidth()]);
 
-                Point[] points = curve.calculateCurve(drawView.getHeight());
+                Point[] points = curve.calculate(drawView.getHeight(), drawView.getWidth());
 
                 curve.setPoints(points);
 
@@ -237,15 +90,119 @@ public class MainActivity extends Activity {
         });
     }
 
-    /*@Override
-    public void onResume() {
-        super.onResume();
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menuInflater.inflate(R.menu.menu, menu);
         return true;
-    }*/
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Curve curve = new Curve();
+        LayoutInflater li = LayoutInflater.from(this);
+
+        switch (item.getItemId()) {
+            case R.id.clear :
+                drawView.setCurve(null);
+                drawView.rePaintCurve();
+                break;
+            case R.id.newLinear :
+                //curve = initCurve(CurveType.Linear);
+                curve.setType(CurveType.Linear);
+                break;
+            case R.id.newQuadratic :
+                //curve = initCurve(CurveType.Quadratic);
+                curve.setType(CurveType.Quadratic);
+                break;
+            case R.id.newSinusoidal :
+                curve = initCurve(CurveType.Sinusoidal);
+                break;
+            case R.id.newItem :
+                //draw(v, li, CurveType.Linear, drawView);
+                curve.setType(CurveType.Quadratic);
+                break;
+            default:
+                return true;
+        }
+        draw(li, curve, drawView);
+        return true;
+    }
+
+    private Curve initCurve(CurveType type) {
+        Curve curve = new Curve();
+        curve.setPoints(new Point[drawView.getWidth()]);
+
+        curve.setType(type);
+        Point[] points = curve.calculate(drawView.getHeight(), drawView.getWidth());
+
+        curve.setPoints(points);
+
+        return curve;
+    }
+
+    private void draw(LayoutInflater li, Curve curve, DrawView drawView) {
+        List<EditText> editTexts = new ArrayList<>();
+        if(curve.getType() == null) {
+            drawView.setCurve(null);
+            drawView.rePaintCurve();
+            return;
+        }
+        View v = null;
+        switch (curve.getType()) {
+            case Linear:
+                v = li.inflate(R.layout.editlinear, null);
+                editTexts.add((EditText)v.findViewById(R.id.editText));
+                editTexts.add((EditText)v.findViewById(R.id.editText2));
+                break;
+            case Quadratic:
+                v = li.inflate(R.layout.editquadratic, null);
+                editTexts.add((EditText)v.findViewById(R.id.editText));
+                editTexts.add((EditText)v.findViewById(R.id.editText2));
+                editTexts.add((EditText)v.findViewById(R.id.editText3));
+                break;
+            case Sinusoidal:
+                break;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("输入参数");
+        builder.setView(v);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                curve.setPoints(new Point[drawView.getWidth()]);
+                ArrayList<Float> parameters = new ArrayList<>(curve.getType().getParameterCount());
+
+                try {
+                    switch (curve.getType()) {
+                        case Linear:
+                            parameters.add(Float.valueOf(editTexts.get(0).getText().toString()));
+                            parameters.add(Float.valueOf(editTexts.get(1).getText().toString()));
+                            break;
+                        case Quadratic:
+                            parameters.add(Float.valueOf(editTexts.get(0).getText().toString()));
+                            parameters.add(Float.valueOf(editTexts.get(1).getText().toString()));
+                            parameters.add(Float.valueOf(editTexts.get(2).getText().toString()));
+                            break;
+                        default:
+                            break;
+                    }
+                } catch(Exception e) {
+                    builder.setView(null);
+                    builder.setTitle("错误").setMessage("输入有误！").setPositiveButton("确定", null).create().show();
+                    return;
+                }
+                curve.setParameters(parameters);
+
+                Point[] points = curve.calculate(drawView.getHeight(), drawView.getWidth());
+
+                curve.setPoints(points);
+
+                drawView.setCurve(curve);
+                drawView.rePaintCurve();
+            }
+        }).setNegativeButton("取消", null);
+        builder.create();
+        builder.show();
+    }
 }
