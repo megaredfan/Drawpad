@@ -5,8 +5,8 @@ package joseph.drawpad.utils;
  */
 public enum CurveType {
     Linear(2),
-    Quadratic(2),
-    Sinusoidal(3);
+    Quadratic(3),
+    Sinusoidal(4);
 
     int parameterCount;
 

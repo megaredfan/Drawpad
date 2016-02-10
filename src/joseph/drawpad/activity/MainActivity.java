@@ -3,18 +3,24 @@ package joseph.drawpad.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 import joseph.drawpad.R;
 import joseph.drawpad.model.Curve;
 import joseph.drawpad.model.Point;
 import joseph.drawpad.utils.CurveType;
 import joseph.drawpad.view.DrawView;
 
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends Activity {
 
@@ -25,7 +31,7 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        Button btn1,btn2,btn3,btn4;
+        Button btn1,btn2,btn3,btn4,btn5;
         menuInflater = getMenuInflater();
         drawView = (DrawView)findViewById(R.id.drawView);
 
@@ -88,6 +94,42 @@ public class MainActivity extends Activity {
                 drawView.rePaintCurve();
             }
         });
+
+        btn5 = (Button)findViewById(R.id.Button05);
+        btn5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.US);
+
+                String fname = "/sdcard/"+ sdf.format(new Date()) + ".png";
+
+                View view = v.getRootView();
+
+                view.setDrawingCacheEnabled(true);
+                view.buildDrawingCache();
+
+                Bitmap bitmap = view.getDrawingCache();
+                if(bitmap != null)
+                {
+                    try{
+                        FileOutputStream out = new FileOutputStream(fname);
+                        bitmap.compress(Bitmap.CompressFormat.PNG,100,out);
+                        Toast.makeText(getApplicationContext(),"截图已保存到" + fname,Toast.LENGTH_LONG).show();
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                        System.out.println(e.getStackTrace());
+                        Toast.makeText(getApplicationContext(),"出错了",Toast.LENGTH_LONG).show();
+                    }
+
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(),"出错了",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
     }
 
     @Override
@@ -115,7 +157,8 @@ public class MainActivity extends Activity {
                 curve.setType(CurveType.Quadratic);
                 break;
             case R.id.newSinusoidal :
-                curve = initCurve(CurveType.Sinusoidal);
+                //curve = initCurve(CurveType.Sinusoidal);
+                curve.setType(CurveType.Sinusoidal);
                 break;
             case R.id.newItem :
                 //draw(v, li, CurveType.Linear, drawView);
@@ -161,6 +204,11 @@ public class MainActivity extends Activity {
                 editTexts.add((EditText)v.findViewById(R.id.editText3));
                 break;
             case Sinusoidal:
+                v = li.inflate(R.layout.editsinusoidal, null);
+                editTexts.add((EditText)v.findViewById(R.id.editText));
+                editTexts.add((EditText)v.findViewById(R.id.editText2));
+                editTexts.add((EditText)v.findViewById(R.id.editText3));
+                editTexts.add((EditText)v.findViewById(R.id.editText4));
                 break;
         }
 
@@ -174,7 +222,10 @@ public class MainActivity extends Activity {
                 ArrayList<Float> parameters = new ArrayList<>(curve.getType().getParameterCount());
 
                 try {
-                    switch (curve.getType()) {
+                    for(int i = 0; i< curve.getType().getParameterCount(); i++) {
+                        parameters.add(Float.valueOf(editTexts.get(i).getText().toString()));
+                    }
+                    /*switch (curve.getType()) {
                         case Linear:
                             parameters.add(Float.valueOf(editTexts.get(0).getText().toString()));
                             parameters.add(Float.valueOf(editTexts.get(1).getText().toString()));
@@ -184,9 +235,15 @@ public class MainActivity extends Activity {
                             parameters.add(Float.valueOf(editTexts.get(1).getText().toString()));
                             parameters.add(Float.valueOf(editTexts.get(2).getText().toString()));
                             break;
+                        case Sinusoidal:
+                            parameters.add(Float.valueOf(editTexts.get(0).getText().toString()));
+                            parameters.add(Float.valueOf(editTexts.get(1).getText().toString()));
+                            parameters.add(Float.valueOf(editTexts.get(2).getText().toString()));
+                            parameters.add(Float.valueOf(editTexts.get(3).getText().toString()));
+                            break;
                         default:
                             break;
-                    }
+                    }*/
                 } catch(Exception e) {
                     builder.setView(null);
                     builder.setTitle("错误").setMessage("输入有误！").setPositiveButton("确定", null).create().show();

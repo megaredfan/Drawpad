@@ -6,13 +6,15 @@
     <LinearLayout android:id="@+id/LinearLayout01"
                   android:layout_width="wrap_content" android:layout_height="wrap_content">
         <Button android:id="@+id/Button01" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:text="一次函数"/>
+                android:layout_height="wrap_content" android:text="一次"/>
         <Button android:id="@+id/Button03" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:text="二次函数"/>
+                android:layout_height="wrap_content" android:text="二次"/>
         <Button android:id="@+id/Button04" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:text="正弦函数"/>
+                android:layout_height="wrap_content" android:text="正弦"/>
         <Button android:id="@+id/Button02" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:text="清除"/>
+        <Button android:id="@+id/Button05" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:text="截屏"/>
     </LinearLayout>
     <joseph.drawpad.view.DrawView
                  android:id="@+id/drawView"
