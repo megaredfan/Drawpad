@@ -9,13 +9,14 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import joseph.drawpad.model.Curve;
 import joseph.drawpad.model.Point;
+import joseph.drawpad.utils.Calculatable;
 
 /**
  * Created by 熊纪元 on 2016/2/9.
  */
 public class DrawView extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder holder;
-    private Curve curve;
+    private Calculatable calculatable;
 
     public DrawView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -25,17 +26,18 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback {
 
     }
 
-    public void setCurve(Curve curve) {
-        this.curve = curve;
+    public void setCurve(Calculatable calculatable) {
+        this.calculatable = calculatable;
     }
+
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        new DrawingThread(holder, curve).start();
+        new DrawingThread(holder, calculatable).start();
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        new DrawingThread(holder, curve).start();
+        new DrawingThread(holder, calculatable).start();
     }
 
     @Override
@@ -43,13 +45,14 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void rePaintCurve(){
-        new DrawingThread(holder, curve).start();
+        new DrawingThread(holder, calculatable).start();
     }
 }
 
 class DrawingThread extends Thread {
     private SurfaceHolder holder;
     private Curve curve;
+    private Calculatable calculatable;
     private static Paint axisPaint, curvePaint;
 
     static {
@@ -65,6 +68,11 @@ class DrawingThread extends Thread {
     public DrawingThread(SurfaceHolder holder, Curve curve) {
         this.holder = holder;
         this.curve = curve;
+    }
+
+    public DrawingThread(SurfaceHolder holder, Calculatable calculatable) {
+        this.holder = holder;
+        this.calculatable = calculatable;
     }
 
     public void setCurve(Curve curve) {
@@ -89,8 +97,8 @@ class DrawingThread extends Thread {
         canvas.drawLine(height, width/2, height - 5, width/2 + 5, paint);
     }
 
-    private void drawCurve(Canvas canvas, Curve curve, int height, Paint paint) {
-        Point[] points = curve.getPoints();
+    private void drawCurve(Canvas canvas, Calculatable calculatable, int height, Paint paint) {
+        Point[] points = calculatable.getPoints();
         for(int i = 0; i< points.length-1; i++) {
             if(points[i].getY() <= height)
                 canvas.drawLine(points[i].getX(), points[i].getY(), points[i+1].getX(), points[i+1].getY(), paint);
@@ -109,11 +117,11 @@ class DrawingThread extends Thread {
                 int width = holder.getSurfaceFrame().width();
                 float[] ptsX = new float[width*100];
 
-                initCanvas(canvas, height, Color.BLACK);
+                initCanvas(canvas, height, Color.GRAY);
                 drawAxis(canvas, height, width, axisPaint);
 
-                if(curve != null) {
-                    drawCurve(canvas, curve, height, curvePaint);
+                if(calculatable != null) {
+                    drawCurve(canvas, calculatable, height, curvePaint);
                 }
             }
         } catch (Exception e) {

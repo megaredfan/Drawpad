@@ -52,19 +52,16 @@ public class Curve {
         Point[] points = new Point[width];
         switch (getType()) {
             case Linear:
-                for(int y = 0; y < width; y++) {
+                for (int y = 0; y < width; y++) {
                     points[y] = new Point();
                     points[y].setY(y);
-                    //points[y].setX(height/2f - width/2f + y);
-                    float X,Y,A,B;
-                    if(this.getParameters() != null && this.getParameters().size() == 2) {
-                        //X = -(width/2f - y) * this.getParameters().get(0) + height/2f + this.getParameters().get(1);
-                        Y = -(width/2f - y);
-                        B = height/2f + this.getParameters().get(1);
+                    float X, Y, A, B;
+                    if (this.getParameters() != null && this.getParameters().size() == 2) {
+                        Y = -(width / 2f - y);
+                        B = height / 2f + this.getParameters().get(1);
                         A = this.getParameters().get(0);
                         X = A * Y + B;
-                    }
-                    else
+                    } else
                         X = -(width/2f - y) + height/2f;
                     points[y].setX(X);
                 }
@@ -100,8 +97,7 @@ public class Curve {
                         D = this.getParameters().get(3) + height/2f;
                         X = (float)(A * Math.sin((double)Y) + D);
                         points[y].setX(X);
-                    }
-                    else
+                    } else
                         points[y].setX(((float) Math.sin(((double) (y-width/2)/50))) * 100f + height/2f);
                 }
                 break;
