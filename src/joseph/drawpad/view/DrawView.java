@@ -86,8 +86,6 @@ class DrawingThread extends Thread {
     }
 
     private void drawAxis(Canvas canvas, int height, int width, Paint paint) {
-
-
         canvas.drawLine(height/2, 0, height/2, width, paint);
         canvas.drawLine(height/2, width , height/2 + 5, width - 5, paint);
         canvas.drawLine(height/2, width , height/2 - 5, width - 5, paint);
