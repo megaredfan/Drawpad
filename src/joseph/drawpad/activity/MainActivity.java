@@ -3,6 +3,7 @@ package joseph.drawpad.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.*;
@@ -34,7 +35,7 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        Button btn1,btn2,btn3,btn4,btn5;
+        Button btn1,btn2,btn3,btn4,btn5,btn6;
         menuInflater = getMenuInflater();
         drawView = (DrawView)findViewById(R.id.drawView);
 
@@ -74,6 +75,21 @@ public class MainActivity extends Activity {
             }
         });
 
+        btn6 = (Button)findViewById(R.id.Button06);
+        btn6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent share = new Intent(android.content.Intent.ACTION_SEND);
+                share.setType("text/plain");
+                String title = "标题";
+                String extraText="share";
+                share.putExtra(Intent.EXTRA_TEXT, extraText);
+                if (title != null) {
+                    share.putExtra(Intent.EXTRA_SUBJECT, title);
+                }
+                startActivity(Intent.createChooser(share, "分享一下"));
+            }
+        });
     }
 
     @Override
@@ -89,7 +105,7 @@ public class MainActivity extends Activity {
 
         switch (item.getItemId()) {
             case R.id.clear :
-                drawView.setCurve(null);
+                drawView.setCalculatable(null);
                 drawView.rePaintCurve();
                 break;
             case R.id.newLinear :
@@ -118,10 +134,16 @@ public class MainActivity extends Activity {
         return true;
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        Toast.makeText(this, "point( " + event.getX() + " , " + event.getY() + " )touched!", Toast.LENGTH_SHORT).show();
+        return true;
+    }
+
     private void draw(LayoutInflater li, Calculatable calculatable, DrawView drawView) {
         List<EditText> editTexts = new ArrayList<>();
         if(calculatable == null) {
-            drawView.setCurve(null);
+            drawView.setCalculatable(null);
             drawView.rePaintCurve();
             return;
         }
@@ -147,7 +169,7 @@ public class MainActivity extends Activity {
 
                 calculatable.setPoints(points);
 
-                drawView.setCurve(calculatable);
+                drawView.setCalculatable(calculatable);
                 drawView.rePaintCurve();
             }
         }).setNegativeButton("取消", null);

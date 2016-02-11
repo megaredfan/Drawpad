@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import joseph.drawpad.model.Curve;
 import joseph.drawpad.model.Point;
 import joseph.drawpad.utils.Calculatable;
 
@@ -26,7 +25,7 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback {
 
     }
 
-    public void setCurve(Calculatable calculatable) {
+    public void setCalculatable(Calculatable calculatable) {
         this.calculatable = calculatable;
     }
 
@@ -47,11 +46,11 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback {
     public void rePaintCurve(){
         new DrawingThread(holder, calculatable).start();
     }
+
 }
 
 class DrawingThread extends Thread {
     private SurfaceHolder holder;
-    private Curve curve;
     private Calculatable calculatable;
     private static Paint axisPaint, curvePaint;
 
@@ -65,18 +64,9 @@ class DrawingThread extends Thread {
         curvePaint.setStrokeWidth(2);
     }
 
-    public DrawingThread(SurfaceHolder holder, Curve curve) {
-        this.holder = holder;
-        this.curve = curve;
-    }
-
     public DrawingThread(SurfaceHolder holder, Calculatable calculatable) {
         this.holder = holder;
         this.calculatable = calculatable;
-    }
-
-    public void setCurve(Curve curve) {
-        this.curve = curve;
     }
 
     private void initCanvas(Canvas canvas, int height, int color) {
