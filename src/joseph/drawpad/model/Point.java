@@ -4,9 +4,27 @@ package joseph.drawpad.model;
  * Created by 熊纪元 on 2016/2/9.
  */
 public class Point {
-    private float x,y;
+    private float x, y;
+    private float xInCurve, yInCurve;
 
-    public Point() {}
+    public float getxInCurve() {
+        return xInCurve;
+    }
+
+    public void setxInCurve(float xInCurve) {
+        this.xInCurve = xInCurve;
+    }
+
+    public float getyInCurve() {
+        return yInCurve;
+    }
+
+    public void setyInCurve(float yInCurve) {
+        this.yInCurve = yInCurve;
+    }
+
+    public Point() {
+    }
 
     public Point(float x, float y) {
         this.x = x;

@@ -5,18 +5,16 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.view.*;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.widget.*;
 import joseph.drawpad.R;
 import joseph.drawpad.model.LinearCurve;
 import joseph.drawpad.model.Point;
 import joseph.drawpad.model.QuadraticCurve;
 import joseph.drawpad.model.SinusoidalCurve;
-import joseph.drawpad.utils.Calculatable;
+import joseph.drawpad.model.Calculatable;
 import joseph.drawpad.view.DrawView;
 
 import java.io.FileOutputStream;
@@ -35,18 +33,17 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        Button btn1,btn2,btn3,btn4,btn5,btn6;
+        Button btnCapture, btnShare;
         menuInflater = getMenuInflater();
-        drawView = (DrawView)findViewById(R.id.drawView);
+        drawView = (DrawView) findViewById(R.id.drawView);
 
-
-        btn5 = (Button)findViewById(R.id.Button05);
-        btn5.setOnClickListener(new View.OnClickListener() {
+        btnCapture = (Button) findViewById(R.id.btnCapture);
+        btnCapture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.US);
 
-                String fname = "/sdcard/"+ sdf.format(new Date()) + ".png";
+                String fname = "/sdcard/" + sdf.format(new Date()) + ".png";
 
                 View view = v.getRootView();
 
@@ -54,40 +51,62 @@ public class MainActivity extends Activity {
                 view.buildDrawingCache();
 
                 Bitmap bitmap = view.getDrawingCache();
-                if(bitmap != null)
-                {
-                    try{
+                Canvas capturedCanvas = new Canvas(bitmap);
+                drawView.saveToCanvas(capturedCanvas);
+                if (bitmap != null) {
+                    try {
                         FileOutputStream out = new FileOutputStream(fname);
-                        bitmap.compress(Bitmap.CompressFormat.PNG,100,out);
-                        Toast.makeText(getApplicationContext(),"截图已保存到" + fname,Toast.LENGTH_LONG).show();
-                    }
-                    catch (Exception e) {
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                        Toast.makeText(getApplicationContext(), "截图已保存到" + fname, Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
                         e.printStackTrace();
                         System.out.println(e.getStackTrace());
-                        Toast.makeText(getApplicationContext(),"出错了",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "出错了", Toast.LENGTH_LONG).show();
                     }
 
-                }
-                else
-                {
-                    Toast.makeText(getApplicationContext(),"出错了",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "出错了", Toast.LENGTH_LONG).show();
                 }
             }
         });
 
-        btn6 = (Button)findViewById(R.id.Button06);
-        btn6.setOnClickListener(new View.OnClickListener() {
+        btnShare = (Button) findViewById(R.id.btnShare);
+        btnShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent share = new Intent(android.content.Intent.ACTION_SEND);
                 share.setType("text/plain");
                 String title = "标题";
-                String extraText="share";
+                String extraText = "share";
                 share.putExtra(Intent.EXTRA_TEXT, extraText);
                 if (title != null) {
                     share.putExtra(Intent.EXTRA_SUBJECT, title);
                 }
                 startActivity(Intent.createChooser(share, "分享一下"));
+            }
+        });
+
+        ZoomControls zoomControls = (ZoomControls)findViewById(R.id.zoomControls);
+        zoomControls.setIsZoomInEnabled(true);
+        zoomControls.setIsZoomOutEnabled(true);
+
+        zoomControls.setOnZoomInClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(drawView != null && drawView.getCalculatable() != null) {
+                    drawView.setCalculatable(drawView.getCalculatable().scale(2f, drawView.getHeight(), drawView.getWidth()));
+                    drawView.rePaintCurve();
+                }
+            }
+        });
+
+        zoomControls.setOnZoomOutClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(drawView != null && drawView.getCalculatable() != null) {
+                    drawView.setCalculatable(drawView.getCalculatable().scale(0.5f, drawView.getHeight(), drawView.getWidth()));
+                    drawView.rePaintCurve();
+                }
             }
         });
     }
@@ -104,30 +123,23 @@ public class MainActivity extends Activity {
         LayoutInflater li = LayoutInflater.from(this);
 
         switch (item.getItemId()) {
-            case R.id.clear :
+            case R.id.clear:
                 drawView.setCalculatable(null);
                 drawView.rePaintCurve();
                 break;
-            case R.id.newLinear :
-                //curve = initCurve(CurveType.Linear);
+            case R.id.newLinear:
                 curve = new LinearCurve();
                 draw(li, curve, drawView);
                 return true;
 
-            case R.id.newQuadratic :
-                //curve = initCurve(CurveType.Quadratic);
+            case R.id.newQuadratic:
                 curve = new QuadraticCurve();
                 draw(li, curve, drawView);
                 break;
-            case R.id.newSinusoidal :
-                //curve = initCurve(CurveType.Sinusoidal);
+            case R.id.newSinusoidal:
                 curve = new SinusoidalCurve();
                 draw(li, curve, drawView);
                 break;
-            /*case R.id.newItem :
-                //draw(v, li, CurveType.Linear, drawView);
-                curve.setType(CurveType.Quadratic);
-                break;*/
             default:
                 return true;
         }
@@ -136,13 +148,13 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Toast.makeText(this, "point( " + event.getX() + " , " + event.getY() + " )touched!", Toast.LENGTH_SHORT).show();
+        // Toast.makeText(this, "point( " + event.getX() + " , " + event.getY() + " )touched!", Toast.LENGTH_SHORT).show();
         return true;
     }
 
     private void draw(LayoutInflater li, Calculatable calculatable, DrawView drawView) {
         List<EditText> editTexts = new ArrayList<>();
-        if(calculatable == null) {
+        if (calculatable == null) {
             drawView.setCalculatable(null);
             drawView.rePaintCurve();
             return;
@@ -156,19 +168,21 @@ public class MainActivity extends Activity {
             public void onClick(DialogInterface dialog, int which) {
                 calculatable.setPoints(new Point[drawView.getWidth()]);
                 List<Float> parameters = null;
-                parameters = calculatable.initParameters((LinearLayout)v);
+                parameters = calculatable.initParameters((LinearLayout) v);
 
-                if(parameters == null){
+                if (parameters == null) {
                     builder.setView(null);
                     builder.setTitle("错误").setMessage("输入有误！").setPositiveButton("确定", null).create().show();
                     return;
                 }
                 calculatable.setParameters(parameters);
 
-                Point[] points = calculatable.calculate(drawView.getHeight(), drawView.getWidth());
+                int width = drawView.getWidth();
+                calculatable.setStartX(-width/2);
+                calculatable.setEndX(width/2);
+                Point[] points = calculatable.calculate(width);
 
                 calculatable.setPoints(points);
-
                 drawView.setCalculatable(calculatable);
                 drawView.rePaintCurve();
             }

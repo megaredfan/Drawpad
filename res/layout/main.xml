@@ -5,21 +5,17 @@
 
     <LinearLayout android:id="@+id/LinearLayout01"
                   android:layout_width="wrap_content" android:layout_height="wrap_content">
-        <Button android:id="@+id/Button01" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:text="一次"/>
-        <Button android:id="@+id/Button03" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:text="二次"/>
-        <Button android:id="@+id/Button04" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:text="正弦"/>
-        <Button android:id="@+id/Button02" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:text="清除"/>
-        <Button android:id="@+id/Button05" android:layout_width="wrap_content"
+        <Button android:id="@+id/btnCapture" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:text="截屏"/>
-        <Button android:id="@+id/Button06" android:layout_width="wrap_content"
+        <Button android:id="@+id/btnShare" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:text="分享"/>
+        <ZoomControls
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/zoomControls"/>
     </LinearLayout>
     <joseph.drawpad.view.DrawView
-                 android:id="@+id/drawView"
-                 android:layout_width="fill_parent"
-                 android:layout_height="fill_parent"/>
+            android:id="@+id/drawView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"/>
 </LinearLayout>

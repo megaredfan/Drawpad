@@ -14,7 +14,9 @@ public class Curve {
     private CurveType type;
     private List<Float> parameters;
 
-    public Curve(){ super();}
+    public Curve() {
+        super();
+    }
 
     public String getName() {
         return name;
@@ -62,43 +64,42 @@ public class Curve {
                         A = this.getParameters().get(0);
                         X = A * Y + B;
                     } else
-                        X = -(width/2f - y) + height/2f;
+                        X = -(width / 2f - y) + height / 2f;
                     points[y].setX(X);
                 }
                 break;
             case Quadratic:
-                for(int y = 0; y < width; y++) {
+                for (int y = 0; y < width; y++) {
                     points[y] = new Point();
                     points[y].setY(y);
-                    float Y,X,A,B,C;
-                    if(this.getParameters() != null && this.getParameters().size() == 3) {
-                        Y = -(width/2f - y);
+                    float Y, X, A, B, C;
+                    if (this.getParameters() != null && this.getParameters().size() == 3) {
+                        Y = -(width / 2f - y);
                         A = this.getParameters().get(0);
                         B = this.getParameters().get(1);
-                        C = this.getParameters().get(2) + height/2f;
+                        C = this.getParameters().get(2) + height / 2f;
                         X = A * Y * Y + B * Y + C;
                         points[y].setX(X);
-                    }
-                    else
-                        points[y].setX(((y-width/2f)*(y-width/2f))/100f + height/2f);
+                    } else
+                        points[y].setX(((y - width / 2f) * (y - width / 2f)) / 100f + height / 2f);
                 }
                 break;
             case Sinusoidal:
-                for(int y = 0; y < width; y++) {
+                for (int y = 0; y < width; y++) {
                     points[y] = new Point();
                     points[y].setY(y);
-                    float Y,X,A,B,C,D;
-                    if(this.getParameters() != null && this.getParameters().size() == 4) {
-                        Y = -(width/2f - y);
+                    float Y, X, A, B, C, D;
+                    if (this.getParameters() != null && this.getParameters().size() == 4) {
+                        Y = -(width / 2f - y);
                         A = this.getParameters().get(0);
                         B = this.getParameters().get(1);
                         C = this.getParameters().get(2);
                         Y = B * Y + C;
-                        D = this.getParameters().get(3) + height/2f;
-                        X = (float)(A * Math.sin((double)Y) + D);
+                        D = this.getParameters().get(3) + height / 2f;
+                        X = (float) (A * Math.sin((double) Y) + D);
                         points[y].setX(X);
                     } else
-                        points[y].setX(((float) Math.sin(((double) (y-width/2)/50))) * 100f + height/2f);
+                        points[y].setX(((float) Math.sin(((double) (y - width / 2) / 50))) * 100f + height / 2f);
                 }
                 break;
             default:

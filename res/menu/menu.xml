@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title="新建" >
+    <item android:title="新建">
         <menu>
             <item android:title="一次函数" android:id="@+id/newLinear"/>
             <item android:title="二次函数" android:id="@+id/newQuadratic"/>
             <item android:title="正弦函数" android:id="@+id/newSinusoidal"/>
         </menu>
     </item>
-    <item android:title="自定义" android:id="@+id/newItem"/>
-    <item android:title="清除" android:id="@+id/clear" />
+    <item android:title="清除" android:id="@+id/clear"/>
 </menu>
