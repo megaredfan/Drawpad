@@ -122,7 +122,7 @@ class DrawingThread extends Thread {
     private void drawCurve(Canvas canvas, Calculatable calculatable, int height, int width, Paint paint) {
         Point[] points = calculatable.getPoints();
         for (int i = 0; i < points.length - 1; i++) {
-            if ((points[i].getX() <= width && points[i].getY() <= height) || (points[i+1].getX() <= width && points[i+1].getY() <= height))
+            if (points[i].getY() <= height || points[i+1].getY() <= height)
                 canvas.drawLine(points[i].getY(), i, points[i + 1].getY(), i + 1, paint);
         }
 

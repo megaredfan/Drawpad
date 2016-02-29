@@ -77,51 +77,34 @@ public class QuadraticCurve extends Calculatable {
 
     }
 
-    @Override
-    public QuadraticCurve scale(float times, float height, float width) {
-        /*for (Point p : points) {
-            p.setY((p.getY() - width/2)*times + width/2);
-            p.setX((p.getX() - height/2)*times + height/2);
+    public Calculatable scale(float multiple, int width, boolean  zoomIn) {
+        float center = (endX + startX)/2;
+        if(zoomIn) {
+            setStartX(center - (center - startX)/multiple);
+            setEndX(center + (endX - center)/multiple);
+            scaleTimes = scaleTimes +1;
+        }else{
+            setStartX(center - (center - startX)*multiple);
+            setEndX(center + (endX - center)*multiple);
+            scaleTimes = scaleTimes - 1;
         }
-        return this;*/
-        int[] area = new int[2];
-        int Iwidth = Math.round(width);
-        Point[] newPoints = new Point[Iwidth];
 
-        if(times > 1) {
-            int Itimes = Math.round(times);
-            Itimes = Itimes*2;
-            area[0] = Math.round(width/2 - width/Itimes);
-            area[1] = Math.round(width/2 + width/Itimes);
-            int start = area[0];
-            int end = area[1];
+        if(parameters == null || parameters.size() != 3)
+            return null;
 
-            int IntTimes = Math.round(times);
-            for(int i = 0; i < newPoints.length; i = i + IntTimes) {
-                for(int j = 0; j < IntTimes; j++) {
-                    newPoints[i+j] = new Point();
-                    newPoints[i+j].setY(i+j);
+        float Y,A,B,C,X;
+        A = parameters.get(0);
+        B = parameters.get(1);
+        C = parameters.get(2);
+        Point[] newPoints = new Point[width];
 
-                    if(j%IntTimes == 0){
-                        newPoints[i].setX(points[start+i/IntTimes].getyInCurve()*times+height/2f);
-                        newPoints[i].setyInCurve(points[start+i/IntTimes].getyInCurve());
-                        newPoints[i].setxInCurve(points[start+i/IntTimes].getxInCurve());
-                    } else {
-                        float Y,X,A,B,C;
-                        float y = points[start+i/IntTimes].getY()+j/times;
-                        //Y = (-(width / 2f - y));
-                        y = points[start+i/IntTimes].getxInCurve()+j/times*(points[start+i/IntTimes+1].getxInCurve()-points[start+i/IntTimes].getxInCurve());
-                        Y = y;
-                        A = this.getParameters().get(0);
-                        B = this.getParameters().get(1);
-                        C = this.getParameters().get(2) + height / 2f;
-                        X = A * Y * Y + B * Y + C;
-                        newPoints[i+j].setyInCurve((X-height/2)/times);
-                        newPoints[i+j].setxInCurve(y);
-                        newPoints[i+j].setX(X);
-                    }
-                }
-            }
+        float delta = (endX - startX)/(width);
+        X = startX;
+        for(int i = 0; i < width; i++) {
+            Y = A * X * X  + B * X + C;
+            Y = (float) (Y * Math.pow((double)multiple,(double)scaleTimes));
+            newPoints[i] = new Point(X,Y);
+            X = X + delta;
         }
         setPoints(newPoints);
         return this;

@@ -18,6 +18,7 @@ public abstract class Calculatable {
     protected String name;
     protected List<Float> parameters;
     protected float startX,endX;
+    protected int scaleTimes;
 
     public abstract String getName();
 
@@ -33,17 +34,31 @@ public abstract class Calculatable {
 
     public abstract View getView(LayoutInflater li);
 
-    public abstract float getEndX();
-
-    public abstract void setEndX(float endX);
-
-    public abstract  float getStartX();
-
-    public abstract void setStartX(float startX);
-
     public abstract Point[] calculate(int width);
 
-    public abstract Calculatable scale(float times, float height, float width);
+    public float getEndX() {
+        return endX;
+    }
+
+    public void setEndX(float endX) {
+        this.endX = endX;
+    }
+
+    public float getStartX() {
+        return startX;
+    }
+
+    public void setStartX(float startX) {
+        this.startX = startX;
+    }
+
+    public int getScaleTimes() {
+        return scaleTimes;
+    }
+
+    public void setScaleTimes(int scaleTimes) {
+        this.scaleTimes = scaleTimes;
+    }
 
     public List<Float> initParameters(LinearLayout layout) {
         List<Float> parameters = new ArrayList<>();
@@ -70,4 +85,5 @@ public abstract class Calculatable {
         return this;
     }
 
+    public abstract Calculatable scale(float multiple, int width, boolean zoomIn);
 }

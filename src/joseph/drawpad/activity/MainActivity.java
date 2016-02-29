@@ -94,7 +94,9 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if(drawView != null && drawView.getCalculatable() != null) {
-                    drawView.setCalculatable(drawView.getCalculatable().scale(2f, drawView.getHeight(), drawView.getWidth()));
+                    Calculatable c = drawView.getCalculatable();
+                    //drawView.setCalculatable(c.scale(2f, drawView.getHeight(), drawView.getWidth()));
+                    drawView.setCalculatable(c.scale(2f,drawView.getWidth(), true));
                     drawView.rePaintCurve();
                 }
             }
@@ -104,7 +106,9 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if(drawView != null && drawView.getCalculatable() != null) {
-                    drawView.setCalculatable(drawView.getCalculatable().scale(0.5f, drawView.getHeight(), drawView.getWidth()));
+                    Calculatable c = drawView.getCalculatable();
+                    //drawView.setCalculatable(c.scale(2f, drawView.getHeight(), drawView.getWidth()));
+                    drawView.setCalculatable(c.scale(2f,drawView.getWidth(), false));
                     drawView.rePaintCurve();
                 }
             }
@@ -131,7 +135,6 @@ public class MainActivity extends Activity {
                 curve = new LinearCurve();
                 draw(li, curve, drawView);
                 return true;
-
             case R.id.newQuadratic:
                 curve = new QuadraticCurve();
                 draw(li, curve, drawView);

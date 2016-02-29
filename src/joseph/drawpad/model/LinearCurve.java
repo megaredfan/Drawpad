@@ -11,6 +11,10 @@ import java.util.List;
  */
 public class LinearCurve extends Calculatable {
 
+    public LinearCurve() {
+        super();
+        setScaleTimes(0);
+    }
 
     public List<Float> getParameters() {
         return parameters;
@@ -102,32 +106,6 @@ public class LinearCurve extends Calculatable {
         return this;
     }*/
 
-    //TODO:测试该方法
-    @Override
-    public LinearCurve scale(float times, float height, float width) {
-        float center = (endX - startX)/2;
-        setStartX(center - (center - startX)/times);
-        setEndX(center + (endX - center)/times);
-
-        if(parameters == null || parameters.size() != 2)
-            return null;
-
-        float Y,A,B,X;
-        A = parameters.get(0);
-        B = parameters.get(1);
-        Point[] points = new Point[(int)width];
-
-        float delta = (endX - startX)/(width);
-        X = startX;
-        for(int i = 0; i < width; i++) {
-            Y = A * X + B;
-            points[i] = new Point(X,Y*times);
-            X = X + delta;
-        }
-        setPoints(points);
-        return this;
-    }
-
     public Point[] calculate(int width) {
         if(parameters == null || parameters.size() != 2)
             return null;
@@ -145,5 +123,37 @@ public class LinearCurve extends Calculatable {
             X = X + delta;
         }
         return points;
+    }
+
+    public Calculatable scale(float multiple, int width, boolean  zoomIn) {
+        float center = (endX + startX)/2;
+        if(zoomIn) {
+            setStartX(center - (center - startX)/multiple);
+            setEndX(center + (endX - center)/multiple);
+            scaleTimes = scaleTimes +1;
+        }else{
+            setStartX(center - (center - startX)*multiple);
+            setEndX(center + (endX - center)*multiple);
+            scaleTimes = scaleTimes - 1;
+        }
+
+        if(parameters == null || parameters.size() != 2)
+            return null;
+
+        float Y,A,B,X;
+        A = parameters.get(0);
+        B = parameters.get(1);
+        Point[] newPoints = new Point[width];
+
+        float delta = (endX - startX)/(width);
+        X = startX;
+        for(int i = 0; i < width; i++) {
+            Y = A * X + B;
+            Y = (float) (Y * Math.pow((double)multiple,(double)scaleTimes));
+            newPoints[i] = new Point(X,Y);
+            X = X + delta;
+        }
+        setPoints(newPoints);
+        return this;
     }
 }

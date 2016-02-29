@@ -61,10 +61,10 @@ public class SinusoidalCurve extends Calculatable {
             return null;
 
         float Y,A,B,C,D,X;
-        A = this.getParameters().get(0);
-        B = this.getParameters().get(1);
-        C = this.getParameters().get(2);
-        D = this.getParameters().get(3);
+        A = parameters.get(0);
+        B = parameters.get(1);
+        C = parameters.get(2);
+        D = parameters.get(3);
         Point[] points = new Point[width];
 
         float delta = (endX - startX)/(width);
@@ -77,12 +77,38 @@ public class SinusoidalCurve extends Calculatable {
         return points;
     }
 
-    @Override
-    public SinusoidalCurve scale(float times, float height, float width) {
-        for (Point p : points) {
-            p.setY((p.getY() - width/2)*times + width/2);
-            p.setX((p.getX() - height/2)*times + height/2);
+    public Calculatable scale(float multiple, int width, boolean  zoomIn) {
+        float center = (endX + startX)/2;
+        if(zoomIn) {
+            setStartX(center - (center - startX)/multiple);
+            setEndX(center + (endX - center)/multiple);
+            scaleTimes = scaleTimes +1;
+        }else{
+            setStartX(center - (center - startX)*multiple);
+            setEndX(center + (endX - center)*multiple);
+            scaleTimes = scaleTimes - 1;
         }
+
+        if(parameters == null || parameters.size() != 4)
+            return null;
+
+        float Y,A,B,C,D,X;
+        A = parameters.get(0);
+        B = parameters.get(1);
+        C = parameters.get(2);
+        D = parameters.get(3);
+
+        Point[] newPoints = new Point[width];
+
+        float delta = (endX - startX)/(width);
+        X = startX;
+        for(int i = 0; i < width; i++) {
+            Y = (float)(A * Math.sin((double)(B * X + C)) + D);
+            Y = (float) (Y * Math.pow((double)multiple,(double)scaleTimes));
+            newPoints[i] = new Point(X,Y);
+            X = X + delta;
+        }
+        setPoints(newPoints);
         return this;
     }
 }
