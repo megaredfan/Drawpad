@@ -8,18 +8,16 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.view.*;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.Toast;
+import android.widget.ZoomControls;
 import joseph.drawpad.R;
-import joseph.drawpad.model.LinearCurve;
-import joseph.drawpad.model.Point;
-import joseph.drawpad.model.QuadraticCurve;
-import joseph.drawpad.model.SinusoidalCurve;
-import joseph.drawpad.model.Calculatable;
+import joseph.drawpad.model.*;
 import joseph.drawpad.view.DrawView;
 
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -45,12 +43,10 @@ public class MainActivity extends Activity {
 
                 String fname = "/sdcard/" + sdf.format(new Date()) + ".png";
 
-                View view = v.getRootView();
+                drawView.setDrawingCacheEnabled(true);
+                drawView.buildDrawingCache();
 
-                view.setDrawingCacheEnabled(true);
-                view.buildDrawingCache();
-
-                Bitmap bitmap = view.getDrawingCache();
+                Bitmap bitmap = drawView.getDrawingCache();
                 Canvas capturedCanvas = new Canvas(bitmap);
                 drawView.saveToCanvas(capturedCanvas);
                 if (bitmap != null) {
@@ -75,7 +71,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent share = new Intent(android.content.Intent.ACTION_SEND);
-                share.setType("text/plain");
+                share.setType("image/*");
                 String title = "标题";
                 String extraText = "share";
                 share.putExtra(Intent.EXTRA_TEXT, extraText);
@@ -155,8 +151,13 @@ public class MainActivity extends Activity {
         return true;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        drawView.rePaintCurve();
+    }
+
     private void draw(LayoutInflater li, Calculatable calculatable, DrawView drawView) {
-        List<EditText> editTexts = new ArrayList<>();
         if (calculatable == null) {
             drawView.setCalculatable(null);
             drawView.rePaintCurve();
@@ -170,8 +171,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 calculatable.setPoints(new Point[drawView.getWidth()]);
-                List<Float> parameters = null;
-                parameters = calculatable.initParameters((LinearLayout) v);
+                List<Float> parameters = calculatable.initParameters((LinearLayout) v);
 
                 if (parameters == null) {
                     builder.setView(null);

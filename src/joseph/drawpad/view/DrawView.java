@@ -146,7 +146,7 @@ class DrawingThread extends Thread {
                     if (calculatable != null) {
                         calculatable.translate(width/2, height/2);
                         drawCurve(canvas, calculatable, height, width, getCurvePaint());
-                        int l = calculatable.getPoints().length;
+                        calculatable.translate(-width/2, -height/2);
                     }
                 }
             } catch (Exception e) {
@@ -165,7 +165,9 @@ class DrawingThread extends Thread {
             drawAxis(canvas, height, width, getAxisPaint());
 
             if (calculatable != null) {
+                calculatable.translate(width/2, height/2);
                 drawCurve(canvas, calculatable, height, width, getCurvePaint());
+                calculatable.translate(-width/2, -height/2);
             }
 
         }
