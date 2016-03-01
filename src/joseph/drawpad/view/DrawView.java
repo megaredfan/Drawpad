@@ -11,7 +11,7 @@ import joseph.drawpad.model.Point;
 import joseph.drawpad.model.Calculatable;
 
 /**
- * Created by 熊纪元 on 2016/2/9.
+ * Created by 鐔婄邯鍏� on 2016/2/9.
  */
 public class DrawView extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder holder;
@@ -60,7 +60,7 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback {
 }
 
 class DrawingThread extends Thread {
-    private static Paint axisPaint, curvePaint;
+    private static Paint axisPaint, curvePaint,textPaint;
     private SurfaceHolder holder;
     private Calculatable calculatable;
     private boolean isCapture;
@@ -92,6 +92,14 @@ class DrawingThread extends Thread {
         return curvePaint;
     }
 
+    public static Paint getTextPaint(){
+        if(textPaint == null){
+        	textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        	textPaint.setColor(Color.WHITE);
+        	textPaint.setTextSize(12);
+        }
+        return textPaint;
+    }
     public DrawingThread(SurfaceHolder holder, Calculatable calculatable) {
         this.holder = holder;
         this.calculatable = calculatable;
@@ -109,6 +117,12 @@ class DrawingThread extends Thread {
         canvas.drawColor(color);
     }
 
+    private void drawText(Canvas canvas,String text,float x,float y,Paint paint,float angle){
+        canvas.rotate(angle, x, y);
+        canvas.drawText(text, x, y, paint);
+        canvas.rotate(-angle, x, y);
+    }
+    
     private void drawAxis(Canvas canvas, int height, int width, Paint paint) {
         canvas.drawLine(height / 2, 0, height / 2, width, paint);
         canvas.drawLine(height / 2, width, height / 2 + 5, width -  5, paint);
@@ -117,6 +131,16 @@ class DrawingThread extends Thread {
         canvas.drawLine(0, width / 2, height, width / 2, paint);
         canvas.drawLine(height, width / 2, height - 5, width / 2 - 5, paint);
         canvas.drawLine(height, width / 2, height - 5, width / 2 + 5, paint);
+        for(int i=0;i<width;i+=width/10)
+        {
+        	drawText(canvas, i/Math.pow(2, calculatable.getScaleTimes())+"", height/2-12, i+width/2+2, getTextPaint(), 90);
+        	drawText(canvas, -i/Math.pow(2, calculatable.getScaleTimes())+"", height/2-12, -i+width/2+2, getTextPaint(), 90);
+        }
+        for(int i=0;i<height;i+=width/10)
+        {
+        	drawText(canvas, i/Math.pow(2, calculatable.getScaleTimes())+"", i+height/2-12, width/2+2, getTextPaint(), 90);
+        	drawText(canvas, -i/Math.pow(2, calculatable.getScaleTimes())+"", -i+height/2-12, width/2+2,  getTextPaint(), 90);
+        }
     }
 
     private void drawCurve(Canvas canvas, Calculatable calculatable, int height, int width, Paint paint) {

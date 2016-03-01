@@ -2,6 +2,7 @@ package joseph.drawpad.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -53,15 +54,15 @@ public class MainActivity extends Activity {
                     try {
                         FileOutputStream out = new FileOutputStream(fname);
                         bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-                        Toast.makeText(getApplicationContext(), "截图已保存到" + fname, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "鎴浘宸蹭繚瀛樺埌" + fname, Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
                         e.printStackTrace();
                         System.out.println(e.getStackTrace());
-                        Toast.makeText(getApplicationContext(), "出错了", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "鍑洪敊浜�", Toast.LENGTH_LONG).show();
                     }
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "出错了", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "鍑洪敊浜�", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -72,13 +73,13 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 Intent share = new Intent(android.content.Intent.ACTION_SEND);
                 share.setType("image/*");
-                String title = "标题";
+                String title = "鏍囬";
                 String extraText = "share";
                 share.putExtra(Intent.EXTRA_TEXT, extraText);
                 if (title != null) {
                     share.putExtra(Intent.EXTRA_SUBJECT, title);
                 }
-                startActivity(Intent.createChooser(share, "分享一下"));
+                startActivity(Intent.createChooser(share, "鍒嗕韩涓�涓�"));
             }
         });
 
@@ -165,32 +166,46 @@ public class MainActivity extends Activity {
         }
         View v = calculatable.getView(li);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("输入参数");
+        builder.setTitle("杈撳叆鍙傛暟");
         builder.setView(v);
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                calculatable.setPoints(new Point[drawView.getWidth()]);
-                List<Float> parameters = calculatable.initParameters((LinearLayout) v);
-
-                if (parameters == null) {
-                    builder.setView(null);
-                    builder.setTitle("错误").setMessage("输入有误！").setPositiveButton("确定", null).create().show();
-                    return;
-                }
-                calculatable.setParameters(parameters);
-
-                int width = drawView.getWidth();
-                calculatable.setStartX(-width/2);
-                calculatable.setEndX(width/2);
-                Point[] points = calculatable.calculate(width);
-
-                calculatable.setPoints(points);
-                drawView.setCalculatable(calculatable);
-                drawView.rePaintCurve();
-            }
-        }).setNegativeButton("取消", null);
+        builder.setPositiveButton("纭畾", new MyListener(calculatable, drawView, builder, v)).setNegativeButton("鍙栨秷", null);
         builder.create();
         builder.show();
     }
+}
+class MyListener implements DialogInterface.OnClickListener{
+	private Calculatable calculatable;
+	private DrawView drawView;
+	private AlertDialog.Builder builder;
+	private View v;
+	
+	 public MyListener(Calculatable calculatable, DrawView drawView, Builder builder, View v) {
+		this.calculatable = calculatable;
+		this.drawView = drawView;
+		this.builder = builder;
+		this.v = v;
+	}
+
+	@Override
+     public void onClick(DialogInterface dialog, int which) {
+         calculatable.setPoints(new Point[drawView.getWidth()]);
+         List<Float> parameters = calculatable.initParameters((LinearLayout) v);
+
+         if (parameters == null) {
+             builder.setView(null);
+             builder.setTitle("閿欒").setMessage("杈撳叆鏈夎锛�").setPositiveButton("纭畾", null).create().show();
+             return;
+         }
+         calculatable.setParameters(parameters);
+
+         int width = drawView.getWidth();
+         calculatable.setStartX(-width/2);
+         calculatable.setEndX(width/2);
+         Point[] points = calculatable.calculate(width);
+
+         calculatable.setPoints(points);
+         drawView.setCalculatable(calculatable);
+         drawView.rePaintCurve();
+     }
+	
 }

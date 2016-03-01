@@ -11,14 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by 熊纪元 on 2016/2/10.
+ * Created by 鐔婄邯鍏� on 2016/2/10.
  */
 public abstract class Calculatable {
     protected Point[] points;
     protected String name;
     protected List<Float> parameters;
     protected float startX,endX;
-    protected int scaleTimes;
+    protected  int scaleTimes;
 
     public abstract String getName();
 
