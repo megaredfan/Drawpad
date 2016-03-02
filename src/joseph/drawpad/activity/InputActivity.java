@@ -16,6 +16,7 @@ import java.util.Arrays;
  */
 public class InputActivity extends Activity {
     private static TextView formula;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,9 +55,9 @@ public class InputActivity extends Activity {
         buttons = new ArrayList(Arrays.asList(buttonArray));
         setButtonInput(buttons);
 
-        Button btnClear = (Button)findViewById(R.id.c);
-        Button btnBksp = (Button)findViewById(R.id.bksp);
-        Button btnDone = (Button)findViewById(R.id.done);
+        Button btnClear = (Button) findViewById(R.id.c);
+        Button btnBksp = (Button) findViewById(R.id.bksp);
+        Button btnDone = (Button) findViewById(R.id.done);
 
         btnClear.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,8 +71,9 @@ public class InputActivity extends Activity {
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setClass(InputActivity.this, MainActivity.class);
-                intent.putExtra("expression",formula.getText().toString().trim());
+                intent.putExtra("expression", formula.getText().toString().trim());
                 startActivity(intent);
+                InputActivity.this.finish();
             }
         });
 
@@ -79,8 +81,8 @@ public class InputActivity extends Activity {
             @Override
             public void onClick(View v) {
                 String text = formula.getText().toString();
-                if(!text.equals("f(x)="))
-                    formula.setText(formula.getText().subSequence(0,formula.getText().length()-1));
+                if (!text.equals("f(x)="))
+                    formula.setText(formula.getText().subSequence(0, formula.getText().length() - 1));
             }
         });
     }
