@@ -6,6 +6,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import fr.expression4j.core.exception.EvalException;
+import fr.expression4j.core.exception.ParsingException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +36,7 @@ public abstract class Calculatable {
 
     public abstract View getView(LayoutInflater li);
 
-    public abstract Point[] calculate(int width);
+    public abstract Point[] calculate(int width) throws ParsingException, EvalException;
 
     public float getEndX() {
         return endX;

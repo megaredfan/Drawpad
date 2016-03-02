@@ -18,5 +18,13 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name="joseph.drawpad.activity.InputActivity"
+                  android:theme="@android:style/Theme.Holo.NoActionBar"
+                  android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="joseph.drawpad.activity.InputActivity" />
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

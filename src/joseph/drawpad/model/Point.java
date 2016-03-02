@@ -5,23 +5,6 @@ package joseph.drawpad.model;
  */
 public class Point {
     private float x, y;
-    private float xInCurve, yInCurve;
-
-    public float getxInCurve() {
-        return xInCurve;
-    }
-
-    public void setxInCurve(float xInCurve) {
-        this.xInCurve = xInCurve;
-    }
-
-    public float getyInCurve() {
-        return yInCurve;
-    }
-
-    public void setyInCurve(float yInCurve) {
-        this.yInCurve = yInCurve;
-    }
 
     public Point() {
     }

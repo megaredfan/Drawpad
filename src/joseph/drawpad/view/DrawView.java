@@ -9,6 +9,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import joseph.drawpad.model.Point;
 import joseph.drawpad.model.Calculatable;
+import joseph.drawpad.model.UniverseCurve;
 
 /**
  * Created by 熊纪元 on 2016/2/9.
@@ -19,8 +20,7 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback {
 
     public DrawView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
-        holder = this.getHolder();
+        holder = getHolder();
         holder.addCallback(this);
 
     }
@@ -35,16 +35,30 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        System.out.println("surfaceCreated");
+        if(calculatable instanceof UniverseCurve) {
+            System.out.println(((UniverseCurve) calculatable).getExpression());
+            if(calculatable.getPoints()!=null){
+                System.out.println("points is not null");
+                for(Point p : calculatable.getPoints()) {
+                    System.out.println("(" + p.getX() + "," + p.getY() + ")");
+                }
+            } else {
+                System.out.println("points is null");
+            }
+        }
         new DrawingThread(holder, calculatable).start();
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        System.out.println("surfaceChanged");
         new DrawingThread(holder, calculatable).start();
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
+        System.out.println("surfaceDestroyed");
     }
 
     public void rePaintCurve() {
@@ -121,8 +135,12 @@ class DrawingThread extends Thread {
 
     private void drawCurve(Canvas canvas, Calculatable calculatable, int height, int width, Paint paint) {
         Point[] points = calculatable.getPoints();
+        if(points == null)
+            return;
         for (int i = 0; i < points.length - 1; i++) {
-            if (points[i].getY() <= height || points[i+1].getY() <= height)
+            if((Float.isInfinite(points[i].getY())) || (Float.isNaN(points[i].getY()))|| (Float.isNaN(points[i+1].getY()))|| (Float.isNaN(points[i+1].getY())))
+                continue;
+            if ((points[i].getY() <= height || points[i+1].getY() <= height) && points[i].getY() >= 0 || points[i+1].getY() >= 0)
                 canvas.drawLine(points[i].getY(), i, points[i + 1].getY(), i + 1, paint);
         }
 

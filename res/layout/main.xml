@@ -9,6 +9,8 @@
                 android:layout_height="wrap_content" android:text="截屏"/>
         <Button android:id="@+id/btnShare" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:text="分享"/>
+        <Button android:id="@+id/btnInput" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:text="新建"/>
         <ZoomControls
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -17,6 +17,16 @@ import java.util.List;
  * Created by 熊纪元 on 2016/3/1.
  */
 public class UniverseCurve extends Calculatable {
+    private String expression;
+
+    public String getExpression() {
+        return expression;
+    }
+
+    public void setExpression(String expression) {
+        this.expression = expression;
+    }
+
     @Override
     public String getName() {
         return this.name;
@@ -53,9 +63,8 @@ public class UniverseCurve extends Calculatable {
     }
 
     @Override
-    public Point[] calculate(int width) {
-        try {
-            Expression expression = ExpressionFactory.createExpression("f(x)=x");
+    public Point[] calculate(int width) throws ParsingException, EvalException {
+            Expression expression = ExpressionFactory.createExpression(this.getExpression());
 
             Point[] points = new Point[width];
 
@@ -70,10 +79,7 @@ public class UniverseCurve extends Calculatable {
                 X = NumberFactory.createReal(X.getRealValue() + delta);
             }
             return points;
-        } catch (ParsingException | EvalException e) {
-            e.printStackTrace();
-        }
-        return points;
+
     }
 
     @Override
@@ -90,7 +96,7 @@ public class UniverseCurve extends Calculatable {
         }
         Point[] newPoints = new Point[width];
         try {
-            Expression expression = ExpressionFactory.createExpression("f(x)=x");
+            Expression expression = ExpressionFactory.createExpression(this.getExpression());
             float delta = (endX - startX)/(width);
 
             MathematicalElement X = NumberFactory.createReal(startX);
@@ -98,7 +104,7 @@ public class UniverseCurve extends Calculatable {
                 Parameters ps = ExpressionFactory.createParameters();
                 ps.addParameter("x", X);
                 MathematicalElement Y = expression.evaluate(ps);
-                newPoints[i] = new Point(((float) X.getRealValue()), ((float) Y.getRealValue()));
+                newPoints[i] = new Point(((float) X.getRealValue()), (float)(Y.getRealValue()*Math.pow(multiple,scaleTimes)));
                 X = NumberFactory.createReal(X.getRealValue() + delta);
             }
         } catch (ParsingException | EvalException e) {
@@ -106,21 +112,5 @@ public class UniverseCurve extends Calculatable {
         }
         setPoints(newPoints);
         return this;
-    }
-
-    public static void main(String[] args) {
-        Calculatable c = new UniverseCurve();
-        c.setStartX(-5);
-        c.setEndX(5);
-        Point[] p = c.calculate(10);
-        c.setPoints(p);
-
-        for (Point ps : c.getPoints()) {
-            System.out.println("( " + ps.getX() + "," + ps.getY() + " )");
-        }
-        c = c.scale(2,20,true);
-        for (Point ps : c.getPoints()) {
-            System.out.println("( " + ps.getX() + "," + ps.getY() + " )");
-        }
     }
 }
