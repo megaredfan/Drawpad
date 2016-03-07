@@ -72,25 +72,25 @@ public class InputActivity extends Activity {
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!formula.getText().toString().equals("f(x)=")){
+                if (!formula.getText().toString().equals("f(x)=")) {
                     progressDialog = new ProgressDialog(InputActivity.this);
                     progressDialog.setIndeterminate(true);
                     progressDialog.setMessage("绘图中。。。");
                     progressDialog.setCancelable(false);
                     progressDialog.show();
 
-                    Thread t = new Thread(){
-                        public void run(){
+                    Thread t = new Thread() {
+                        public void run() {
                             Intent intent = new Intent();
                             intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                             intent.setClass(InputActivity.this, MainActivity.class);
                             String expression = formula.getText().toString().trim();
 
-                            expression = expression.replaceAll("log","1/log(10)*log").replaceAll("ln","log");
+                            expression = expression.replaceAll("log", "1/log(10)*log").replaceAll("ln", "log");
                             intent.putExtra("expression", expression);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             //startActivity(intent);
-                            startActivityForResult(intent,0);
+                            startActivityForResult(intent, 0);
 
                         }
                     };
@@ -117,7 +117,7 @@ public class InputActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(progressDialog != null && progressDialog.isShowing()){
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
         finish();

@@ -28,26 +28,27 @@ import java.util.Locale;
 
 public class MainActivity extends Activity {
 
+    private static HashMap<String, Integer> colorsMap;
+
+    static {
+        colorsMap = new HashMap<>();
+        colorsMap.put("黑色", 0xFF000000);
+        colorsMap.put("暗灰色", 0xFF444444);
+        colorsMap.put("灰色", 0xFF888888);
+        colorsMap.put("亮灰色", 0xFFCCCCCC);
+        colorsMap.put("白色", 0xFFFFFFFF);
+        colorsMap.put("红色", 0xFFFF0000);
+        colorsMap.put("绿色", 0xFF00FF00);
+        colorsMap.put("蓝色", 0xFF0000FF);
+        colorsMap.put("黄色", 0xFFFFFF00);
+        colorsMap.put("青色", 0xFF00FFFF);
+        colorsMap.put("紫红色", 0xFFFF00FF);
+
+    }
+
     private MenuInflater menuInflater;
     private DrawView drawView;
     private String EXP;
-    private static HashMap<String, Integer> colorsMap;
-
-    static{
-        colorsMap = new HashMap<>();
-        colorsMap.put("黑色",0xFF000000);
-        colorsMap.put("暗灰色",0xFF444444);
-        colorsMap.put("灰色",0xFF888888);
-        colorsMap.put("亮灰色",0xFFCCCCCC);
-        colorsMap.put("白色",0xFFFFFFFF);
-        colorsMap.put("红色",0xFFFF0000);
-        colorsMap.put("绿色",0xFF00FF00);
-        colorsMap.put("蓝色",0xFF0000FF);
-        colorsMap.put("黄色",0xFFFFFF00);
-        colorsMap.put("青色",0xFF00FFFF);
-        colorsMap.put("紫红色",0xFFFF00FF);
-
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,7 +88,7 @@ public class MainActivity extends Activity {
                                 shareCapturedCurve(fname);
                             }
                         });
-                        builder.setNegativeButton("取消",null);
+                        builder.setNegativeButton("取消", null);
                         builder.show();
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
@@ -142,14 +143,14 @@ public class MainActivity extends Activity {
                     drawView.setCurve(c.scale(2f, drawView.getWidth(), false));
                     drawView.rePaintCurve();
 
-                    if(progressDialog != null && progressDialog.isShowing())
+                    if (progressDialog != null && progressDialog.isShowing())
                         progressDialog.dismiss();
                 }
                 zoomControls.setIsZoomOutEnabled(true);
             }
         });
 
-        if(savedInstanceState != null)
+        if (savedInstanceState != null)
             EXP = savedInstanceState.getString("expression");
     }
 
@@ -174,7 +175,7 @@ public class MainActivity extends Activity {
                 drawView.getDrawingThread().changeCurveColor(Color.RED);
                 ArrayAdapter<CharSequence> colors = ArrayAdapter.createFromResource(this, R.array.colors, android.R.layout.simple_spinner_dropdown_item);
                 LayoutInflater layoutInflater = getLayoutInflater();
-                LinearLayout ll = (LinearLayout)layoutInflater.inflate(R.layout.colorpicker, null);
+                LinearLayout ll = (LinearLayout) layoutInflater.inflate(R.layout.colorpicker, null);
                 Spinner colorSpinner = ((Spinner) ll.findViewById(R.id.colorSpinner));
                 colorSpinner.setPrompt("请选择颜色");
                 colorSpinner.setAdapter(colors);
@@ -242,7 +243,7 @@ public class MainActivity extends Activity {
 
             setResult(RESULT_OK);
         }
-        if(EXP != null){
+        if (EXP != null) {
             String expression = EXP;
             Curve curve = new Curve(expression);
 
@@ -259,7 +260,7 @@ public class MainActivity extends Activity {
             curve.setPoints(points);
             drawView.setCurve(curve);
         }
-        if(progressDialog != null && progressDialog.isShowing())
+        if (progressDialog != null && progressDialog.isShowing())
             progressDialog.dismiss();
         return;
     }
@@ -270,7 +271,7 @@ public class MainActivity extends Activity {
         outState.putString("expression", EXP);
     }
 
-    protected  void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         EXP = savedInstanceState.getString("expression");
     }
@@ -282,7 +283,7 @@ public class MainActivity extends Activity {
         share.putExtra(Intent.EXTRA_SUBJECT, "分享");
         share.putExtra(Intent.EXTRA_TEXT, "看我画的漂亮曲线~");
         File pic = new File(fileName);
-        if(!pic.exists()){
+        if (!pic.exists()) {
             return;
         }
         Uri uri = Uri.fromFile(pic);

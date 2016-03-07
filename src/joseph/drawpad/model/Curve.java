@@ -106,7 +106,7 @@ public class Curve {
     }
 }
 
-class CalculatingThread extends Thread{
+class CalculatingThread extends Thread {
     private Curve curve;
     private int width;
     private Point[] points;
@@ -117,7 +117,7 @@ class CalculatingThread extends Thread{
         this.points = new Point[width];
     }
 
-    public Point[] getPoints(){
+    public Point[] getPoints() {
         return this.points;
     }
 
@@ -140,14 +140,14 @@ class CalculatingThread extends Thread{
     }
 }
 
-class ScalingThread extends Thread{
+class ScalingThread extends Thread {
     private Curve curve;
     private int width;
     private Point[] points;
     private float multiple;
     private boolean zoomIn;
 
-    public ScalingThread(Curve curve, int width,float multiple, boolean zoomIn) {
+    public ScalingThread(Curve curve, int width, float multiple, boolean zoomIn) {
         this.curve = curve;
         this.width = width;
         this.points = new Point[width];
@@ -155,7 +155,7 @@ class ScalingThread extends Thread{
         this.zoomIn = zoomIn;
     }
 
-    public Point[] getPoints(){
+    public Point[] getPoints() {
         return this.points;
     }
 

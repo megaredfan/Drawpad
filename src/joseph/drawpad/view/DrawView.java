@@ -9,7 +9,7 @@ import joseph.drawpad.model.Curve;
 
 /**
  * Created by 熊纪元 on 2016/2/9.
- *
+ * <p>
  * 自定义的surfaceview
  */
 public class DrawView extends SurfaceView implements SurfaceHolder.Callback {
@@ -43,13 +43,13 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        drawingThread =  new DrawingThread(holder, curve);
+        drawingThread = new DrawingThread(holder, curve);
         drawingThread.start();
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        drawingThread =  new DrawingThread(holder, curve);
+        drawingThread = new DrawingThread(holder, curve);
         drawingThread.start();
     }
 

@@ -9,7 +9,7 @@ import joseph.drawpad.model.Point;
 
 /**
  * Created by 熊纪元 on 2016/3/3.
- *
+ * <p>
  * 用于绘制函数图像，在后台线程中绘图以提高相应速度
  */
 public class DrawingThread extends Thread {
@@ -58,10 +58,6 @@ public class DrawingThread extends Thread {
         return curvePaint;
     }
 
-    public void changeCurveColor(int color) {
-        getCurvePaint().setColor(color);
-    }
-
     public static Paint getTextPaint(int textSize) {
         if (textPaint == null) {
             textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -69,6 +65,10 @@ public class DrawingThread extends Thread {
             textPaint.setTextSize(textSize);
         }
         return textPaint;
+    }
+
+    public void changeCurveColor(int color) {
+        getCurvePaint().setColor(color);
     }
 
     public void setCapturedCanvas(Canvas capturedCanvas) {
@@ -80,7 +80,7 @@ public class DrawingThread extends Thread {
      *
      * @param canvas 画布
      * @param height 因为要将原点从顶部移动到地步，所以需要画布的高度
-     * @param color 背景颜色
+     * @param color  背景颜色
      */
     private void initCanvas(Canvas canvas, int height, int color) {
         canvas.translate(0, height);
@@ -100,8 +100,8 @@ public class DrawingThread extends Thread {
      *
      * @param canvas 画布
      * @param height 画布高度
-     * @param width 画布宽度
-     * @param paint 画笔
+     * @param width  画布宽度
+     * @param paint  画笔
      */
     private void drawAxis(Canvas canvas, int height, int width, Paint paint) {
         canvas.drawLine(height / 2, 0, height / 2, width, paint);
@@ -112,8 +112,8 @@ public class DrawingThread extends Thread {
         canvas.drawLine(height, width / 2, height - 5, width / 2 - 5, paint);
         canvas.drawLine(height, width / 2, height - 5, width / 2 + 5, paint);
 
-        if(curve != null){
-            int TEXT_SIZE = Math.round(width/40);
+        if (curve != null) {
+            int TEXT_SIZE = Math.round(width / 40);
             for (int i = 0; i < width; i += width / 10) {
                 drawText(canvas, i / Math.pow(2, curve.getScaleTimes()) + "", height / 2 - TEXT_SIZE, i + width / 2 + 2, getTextPaint(TEXT_SIZE), 90);
                 drawText(canvas, -i / Math.pow(2, curve.getScaleTimes()) + "", height / 2 - TEXT_SIZE, -i + width / 2 + 2, getTextPaint(TEXT_SIZE), 90);
