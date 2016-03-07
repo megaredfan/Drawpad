@@ -8,17 +8,14 @@ import fr.expression4j.core.exception.ParsingException;
 import fr.expression4j.factory.ExpressionFactory;
 import fr.expression4j.factory.NumberFactory;
 
-import java.util.List;
-
 /**
  * Created by 熊纪元 on 2016/3/1.
  */
 public class Curve {
-    protected Point[] points;
-    protected String name;
-    protected List<Float> parameters;
-    protected float startX, endX;
-    protected int scaleTimes;
+    private Point[] points;
+    private String name;
+    private float startX, endX;
+    private int scaleTimes;
     private String expression;
 
     public Curve() {
@@ -42,14 +39,6 @@ public class Curve {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<Float> getParameters() {
-        return this.parameters;
-    }
-
-    public void setParameters(List<Float> parameters) {
-        this.parameters = parameters;
     }
 
     public Point[] getPoints() {
@@ -84,53 +73,27 @@ public class Curve {
         this.scaleTimes = scaleTimes;
     }
 
-    public Point[] calculate(int width) throws ParsingException, EvalException {
-        Expression expression = ExpressionFactory.createExpression(this.getExpression());
-
-        Point[] points = new Point[width];
-
-        float delta = (endX - startX) / (width);
-
-        MathematicalElement X = NumberFactory.createReal(startX);
-        for (int i = 0; i < width; i++) {
-            Parameters ps = ExpressionFactory.createParameters();
-            ps.addParameter("x", X);
-            MathematicalElement Y = expression.evaluate(ps);
-            points[i] = new Point(((float) X.getRealValue()), ((float) Y.getRealValue()));
-            X = NumberFactory.createReal(X.getRealValue() + delta);
+    public Point[] calculate(int width) {
+        CalculatingThread t = new CalculatingThread(this, width);
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        return points;
+        return t.getPoints();
 
     }
 
     public Curve scale(float multiple, int width, boolean zoomIn) {
-        float center = (startX + endX) / 2;
-        if (zoomIn) {
-            setStartX(center - (center - startX) / multiple);
-            setEndX(center + (endX - center) / multiple);
-            scaleTimes = scaleTimes + 1;
-        } else {
-            setStartX(center - (center - startX) * multiple);
-            setEndX(center + (endX - center) * multiple);
-            scaleTimes = scaleTimes - 1;
-        }
-        Point[] newPoints = new Point[width];
+        ScalingThread t = new ScalingThread(this, width, multiple, zoomIn);
+        t.start();
         try {
-            Expression expression = ExpressionFactory.createExpression(this.getExpression());
-            float delta = (endX - startX) / (width);
-
-            MathematicalElement X = NumberFactory.createReal(startX);
-            for (int i = 0; i < width; i++) {
-                Parameters ps = ExpressionFactory.createParameters();
-                ps.addParameter("x", X);
-                MathematicalElement Y = expression.evaluate(ps);
-                newPoints[i] = new Point(((float) X.getRealValue()), (float) (Y.getRealValue() * Math.pow(multiple, scaleTimes)));
-                X = NumberFactory.createReal(X.getRealValue() + delta);
-            }
-        } catch (ParsingException | EvalException e) {
+            t.join();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        setPoints(newPoints);
+        setPoints(t.getPoints());
         return this;
     }
 
@@ -140,5 +103,87 @@ public class Curve {
             p.setY(p.getY() + dy);
         }
         return this;
+    }
+}
+
+class CalculatingThread extends Thread{
+    private Curve curve;
+    private int width;
+    private Point[] points;
+
+    public CalculatingThread(Curve curve, int width) {
+        this.curve = curve;
+        this.width = width;
+        this.points = new Point[width];
+    }
+
+    public Point[] getPoints(){
+        return this.points;
+    }
+
+    public void run() {
+        Expression expression = null;
+        try {
+            expression = ExpressionFactory.createExpression(curve.getExpression());
+            float delta = (curve.getEndX() - curve.getStartX()) / (width);
+            MathematicalElement X = NumberFactory.createReal(curve.getStartX());
+            for (int i = 0; i < width; i++) {
+                Parameters ps = ExpressionFactory.createParameters();
+                ps.addParameter("x", X);
+                MathematicalElement Y = expression.evaluate(ps);
+                points[i] = new Point(((float) X.getRealValue()), ((float) Y.getRealValue()));
+                X = NumberFactory.createReal(X.getRealValue() + delta);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+class ScalingThread extends Thread{
+    private Curve curve;
+    private int width;
+    private Point[] points;
+    private float multiple;
+    private boolean zoomIn;
+
+    public ScalingThread(Curve curve, int width,float multiple, boolean zoomIn) {
+        this.curve = curve;
+        this.width = width;
+        this.points = new Point[width];
+        this.multiple = multiple;
+        this.zoomIn = zoomIn;
+    }
+
+    public Point[] getPoints(){
+        return this.points;
+    }
+
+    public void run() {
+        float center = (curve.getStartX() + curve.getEndX()) / 2;
+        if (zoomIn) {
+            curve.setStartX(center - (center - curve.getStartX()) / multiple);
+            curve.setEndX(center + (curve.getEndX() - center) / multiple);
+            curve.setScaleTimes(curve.getScaleTimes() + 1);
+        } else {
+            curve.setStartX(center - (center - curve.getStartX()) * multiple);
+            curve.setEndX(center + (curve.getEndX() - center) * multiple);
+            curve.setScaleTimes(curve.getScaleTimes() - 1);
+        }
+        try {
+            Expression expression = ExpressionFactory.createExpression(curve.getExpression());
+            float delta = (curve.getEndX() - curve.getStartX()) / (width);
+
+            MathematicalElement X = NumberFactory.createReal(curve.getStartX());
+            for (int i = 0; i < width; i++) {
+                Parameters ps = ExpressionFactory.createParameters();
+                ps.addParameter("x", X);
+                MathematicalElement Y = expression.evaluate(ps);
+                points[i] = new Point(((float) X.getRealValue()), (float) (Y.getRealValue() * Math.pow(multiple, curve.getScaleTimes())));
+                X = NumberFactory.createReal(X.getRealValue() + delta);
+            }
+        } catch (ParsingException | EvalException e) {
+            e.printStackTrace();
+        }
     }
 }

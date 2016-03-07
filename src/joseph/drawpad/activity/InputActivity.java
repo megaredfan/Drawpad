@@ -1,6 +1,7 @@
 package joseph.drawpad.activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -16,11 +17,13 @@ import java.util.Arrays;
  */
 public class InputActivity extends Activity {
     private static TextView formula;
+    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.input);
+
         formula = (TextView) findViewById(R.id.input);
         ArrayList<Button> buttons = new ArrayList<>();
         Button[] buttonArray = {
@@ -69,11 +72,36 @@ public class InputActivity extends Activity {
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setClass(InputActivity.this, MainActivity.class);
-                intent.putExtra("expression", formula.getText().toString().trim());
-                startActivity(intent);
-                InputActivity.this.finish();
+                if(!formula.getText().toString().equals("f(x)=")){
+                    progressDialog = new ProgressDialog(InputActivity.this);
+                    progressDialog.setIndeterminate(true);
+                    progressDialog.setMessage("绘图中。。。");
+                    progressDialog.setCancelable(false);
+                    progressDialog.show();
+
+                    Thread t = new Thread(){
+                        public void run(){
+                            Intent intent = new Intent();
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                            intent.setClass(InputActivity.this, MainActivity.class);
+                            String expression = formula.getText().toString().trim();
+
+                            expression = expression.replaceAll("log","1/log(10)*log").replaceAll("ln","log");
+                            intent.putExtra("expression", expression);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            //startActivity(intent);
+                            startActivityForResult(intent,0);
+
+                        }
+                    };
+                    t.start();
+
+                    try {
+                        t.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         });
 
@@ -85,6 +113,14 @@ public class InputActivity extends Activity {
                     formula.setText(formula.getText().subSequence(0, formula.getText().length() - 1));
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(progressDialog != null && progressDialog.isShowing()){
+            progressDialog.dismiss();
+        }
+        finish();
     }
 
     private void setButtonInput(ArrayList<Button> buttonList) {
